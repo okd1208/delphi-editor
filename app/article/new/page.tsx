@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import ErrorModal from '../../../components/ErrorModal';
 
 const ArticleNew: React.FC = () => {
+  const router = useRouter();
   const [customTitleEnabled, setCustomTitleEnabled] = useState<boolean>(false);
   const [customPromptEnabled, setCustomPromptEnabled] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
@@ -43,11 +45,20 @@ const ArticleNew: React.FC = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8000/api/article/new', requestBody);
+      // TODO: execute api
+      // const response = await axios.post('http://localhost:8000/api/article/new', requestBody);
+      const response = {
+        status: 200,
+        data: {
+          id: 1,
+          titleSuggestions: ["How to Write a Great Article", "Top 10 Tips for Effective Writing"],
+          compositionSuggestions: ["Start with an engaging introduction", "Use clear and concise language", "Include examples and illustrations"]
+        }
+      };
       if (response.status === 200) {
         const { id, titleSuggestions, compositionSuggestions } = response.data;
         // グローバル変数に設定する処理をここに書く
-        const nextPath = customTitleEnabled ? '/article/edit/step2' : '/article/edit/step1';
+        const nextPath = customTitleEnabled ? `/article/edit/${response.data.id}/step2` : `/article/edit/${response.data.id}/step1`;
         window.location.href = nextPath;
       } else {
         alert('エラーが発生しました。');
